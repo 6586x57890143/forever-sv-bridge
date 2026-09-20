@@ -4,38 +4,44 @@ keeps addon settings across reloads and logins on the wow forever beta. the clie
 
 ## install
 
-paste into an open powershell window
+windows, paste into a powershell window
 
 ```powershell
 irm https://sv.melting.lol | iex
 ```
 
-then log out to the character screen once so the client picks up the new addon
+linux (wow under wine, lutris, bottles or proton) with [powershell 7](https://learn.microsoft.com/powershell/scripting/install/installing-powershell-on-linux)
+
+```sh
+pwsh -c 'irm https://sv.melting.lol | iex'
+```
+
+then log out to the character screen once so the client picks up the new addon. after that /reload and relog keep your settings
 
 ## remove
 
 ```powershell
-& "$env:LOCALAPPDATA\ForeverSVBridge\forever_sv_bridge.ps1" -Uninstall
+& "$env:LOCALAPPDATA\ForeverSVBridge\forever_sv_bridge.ps1" -Uninstall     # windows
+pwsh ~/.local/share/ForeverSVBridge/forever_sv_bridge.ps1 -Uninstall       # linux
 ```
 
 ## how it works
 
-a hidden logon task watches `WTF\Account\<acct>\` and copies every non blizzard savedvariables file into `Interface\AddOns\!!ForeverSVBridge\seeds\`. that addon loads first and executes the copies as lua so every addon finds its globals already set. per character files are wrapped per character and a loader runs the set for whoever logs in. nil, empty or half written files are skipped
+a background watcher (logon task on windows, systemd user service on linux) follows `WTF\Account\<acct>\` and copies every non blizzard savedvariables file into `Interface\AddOns\!!ForeverSVBridge\seeds\`. that addon loads first and runs the copies as lua, so every addon finds its settings already in place. per character files are wrapped per character and a loader picks the set for whoever logs in. empty or half written files are skipped
 
-if ellesmereui is present a shim sets `EllesmereUI.FOREVER_SV_BUG = false` so it stops clearing its own settings at logout
+if ellesmereui is installed a shim sets `EllesmereUI.FOREVER_SV_BUG = false` so it stops clearing its own settings at logout
 
-writes only `Interface\AddOns\!!ForeverSVBridge\` and `%LOCALAPPDATA%\ForeverSVBridge\`
+everything lives in `Interface\AddOns\!!ForeverSVBridge\` and `%LOCALAPPDATA%\ForeverSVBridge\` (linux `~/.local/share/ForeverSVBridge/`)
 
 ## notes
 
-- windows only
+- linux: the game folder is looked up in the usual wine prefixes (`~/Games/*`, `~/.wine`, bottles, steam compatdata); anywhere else pass `-GamePath /path/to/_classic_beta_` or answer the prompt
 - several wow accounts on one install: the most recently active one wins
 - per character matching goes by character name, realm is ignored
-- do not launch powershell with the install line on its command line (win+r), defender flags that pattern
 
 ## development
 
-`forever_sv_bridge.tests.ps1 -Coverage` runs the tests. `forever_sv_bridge.ps1` must stay utf-8 with bom, `install.ps1` must stay plain ascii without one. `npx wrangler deploy` publishes
+`forever_sv_bridge.tests.ps1 -Coverage` runs the tests on windows powershell and pwsh (ci covers both plus linux). `forever_sv_bridge.ps1` stays utf-8 with bom, `install.ps1` stays plain ascii. `npx wrangler deploy` publishes
 
 ## license
 
