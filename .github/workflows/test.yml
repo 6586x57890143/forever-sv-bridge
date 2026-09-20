@@ -26,3 +26,12 @@ jobs:
       - name: self-check (pwsh on Linux, systemd path)
         shell: pwsh
         run: ./forever_sv_bridge.tests.ps1 -Coverage
+      - name: install.sh (pwsh stubbed, BOM-less download must come out byte-identical to the repo file)
+        shell: bash
+        run: |
+          mkdir -p stub srv && printf '#!/bin/sh\necho "$@" > "$STUB_LOG"\n' > stub/pwsh && chmod +x stub/pwsh
+          tail -c +4 forever_sv_bridge.ps1 > srv/forever_sv_bridge.ps1
+          export STUB_LOG=$PWD/stub.log XDG_DATA_HOME=$PWD/data
+          PATH=$PWD/stub:$PATH SV_BASE=file://$PWD/srv sh install.sh -GamePath /x
+          cmp forever_sv_bridge.ps1 data/ForeverSVBridge/forever_sv_bridge.ps1
+          grep -qx -- "-NoProfile -File $PWD/data/ForeverSVBridge/forever_sv_bridge.ps1 -GamePath /x" stub.log

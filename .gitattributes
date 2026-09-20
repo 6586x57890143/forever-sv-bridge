@@ -2,3 +2,4 @@
 *.ps1 -text
 *.md  text eol=lf
 _headers text eol=lf
+*.sh   text eol=lf

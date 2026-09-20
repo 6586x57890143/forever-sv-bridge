@@ -1,10 +1,14 @@
-# served by the forever-sv-bridge worker: utf-8 text for irm, never cached stale, never indexed
+# served by the forever-sv-bridge worker: utf-8 text for irm / curl, never cached stale, never indexed
 /*
   X-Robots-Tag: noindex, nofollow
 /
   Content-Type: text/plain; charset=utf-8
   Cache-Control: no-cache
 /*.ps1
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: no-cache
+  X-Content-Type-Options: nosniff
+/*.sh
   Content-Type: text/plain; charset=utf-8
   Cache-Control: no-cache
   X-Content-Type-Options: nosniff
