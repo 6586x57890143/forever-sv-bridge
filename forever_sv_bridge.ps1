@@ -17,7 +17,8 @@ Install (downloads this file to the install dir, sets up a background watcher
 as a logon task / systemd user service and starts it):
 
     irm https://sv.melting.lol | iex                     Windows
-    pwsh -c 'irm https://sv.melting.lol | iex'           Linux (WoW under Wine/Lutris/Proton)
+    curl -fsSL https://sv.melting.lol/install.sh | sh    Linux / Steam Deck (WoW under Wine, Lutris, Bottles or Proton;
+                                                         install.sh unpacks a user-local pwsh 7 if there is none)
 
 Installed:   forever_sv_bridge.ps1 -Watch [-GamePath <_classic_beta_>]   run the watcher here
              forever_sv_bridge.ps1 -Uninstall                             remove task, addon, install dir
@@ -243,9 +244,11 @@ function Read-ProductDb($db) {   # Battle.net's install list; the paths in it ar
     }
 }
 
-function Get-WinePrefixes {   # lutris, plain wine, bottles, steam/proton
+function Get-WinePrefixes {   # lutris, plain wine, bottles, steam/proton (native + flatpak), steam deck sd card
     Get-Item "$HOME/Games/*", "$HOME/.wine", "$HOME/.var/app/com.usebottles.bottles/data/bottles/bottles/*", "$HOME/.local/share/bottles/bottles/*",
-             "$HOME/.steam/steam/steamapps/compatdata/*/pfx", "$HOME/.local/share/Steam/steamapps/compatdata/*/pfx" -ErrorAction SilentlyContinue |
+             "$HOME/.steam/steam/steamapps/compatdata/*/pfx", "$HOME/.local/share/Steam/steamapps/compatdata/*/pfx",
+             "$HOME/.var/app/com.valvesoftware.Steam/.local/share/Steam/steamapps/compatdata/*/pfx",
+             "/run/media/*/steamapps/compatdata/*/pfx", "/run/media/*/*/steamapps/compatdata/*/pfx" -ErrorAction SilentlyContinue |
         Where-Object { Test-Path -LiteralPath "$($_.FullName)/dosdevices/c:" } | ForEach-Object FullName
 }
 
