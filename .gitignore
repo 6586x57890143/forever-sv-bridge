@@ -1,0 +1,5 @@
+# personal SavedVariables snapshots - never publish
+backup/
+*.log
+.wrangler/
+node_modules/

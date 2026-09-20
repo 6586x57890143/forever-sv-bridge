@@ -1,0 +1,21 @@
+name: test
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: self-check (Windows PowerShell 5.1, with coverage)
+        shell: cmd
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File forever_sv_bridge.tests.ps1 -Coverage
+      - name: self-check (PowerShell 7)
+        shell: pwsh
+        run: ./forever_sv_bridge.tests.ps1
+      - name: encoding contract
+        shell: pwsh
+        run: |
+          $b = [IO.File]::ReadAllBytes("forever_sv_bridge.ps1")
+          if (-not ($b[0] -eq 0xEF -and $b[1] -eq 0xBB -and $b[2] -eq 0xBF)) { throw "forever_sv_bridge.ps1 lost its UTF-8 BOM (Windows PowerShell would misparse the art)" }
+          $i = [IO.File]::ReadAllText("install.ps1")
+          if ($i -match "[^\x09\x0A\x0D\x20-\x7E]") { throw "install.ps1 must stay pure ASCII (it is piped through irm | iex)" }
+          if (Select-String -Path *.ps1, README.md -Pattern "DOMAIN" -Quiet) { Write-Host "::warning::DOMAIN placeholder still present" }

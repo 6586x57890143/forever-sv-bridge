@@ -1,0 +1,6 @@
+# only the two scripts go public; _headers and _redirects are parsed by workers, not served
+*
+!install.ps1
+!forever_sv_bridge.ps1
+!_headers
+!_redirects

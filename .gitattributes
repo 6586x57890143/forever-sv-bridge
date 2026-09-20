@@ -1,0 +1,4 @@
+# keep the scripts byte-exact: forever_sv_bridge.ps1 needs its UTF-8 BOM, install.ps1 must stay BOM-less ASCII
+*.ps1 -text
+*.md  text eol=lf
+_headers text eol=lf

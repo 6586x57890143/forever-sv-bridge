@@ -1,0 +1,15 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "forever-sv-bridge",
+  "compatibility_date": "2026-09-20",
+  // assets-only worker: no script, just the two ps1 files + _headers/_redirects (see .assetsignore)
+  "assets": { "directory": "./", "not_found_handling": "none" },
+  // custom domain = dns + cert; the explicit route outranks the zone's `*.melting.lol/*` wildcard route
+  "routes": [
+    { "pattern": "sv.melting.lol", "custom_domain": true },
+    { "pattern": "sv.melting.lol/*", "zone_name": "melting.lol" }
+  ],
+  // private: no workers.dev hostname, no preview urls
+  "workers_dev": false,
+  "preview_urls": false
+}
