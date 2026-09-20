@@ -140,6 +140,7 @@ function Say($msg) {
 }
 
 function Use-GameDir($dir) {   # every path below hangs off the game folder
+    if (Test-Path -LiteralPath $dir) { $dir = (Get-Item -LiteralPath $dir).FullName }   # long form: 8.3 names would not string-match
     $script:Root   = $dir
     $script:Addons = "$dir\Interface\AddOns"
     $script:Seed   = "$script:Addons\$AddonName"

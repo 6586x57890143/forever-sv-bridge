@@ -31,7 +31,7 @@ function Touch($path, $text, $ageSec = 5) {
 function Unmock { foreach ($n in $args) { Remove-Item "function:$n" -ErrorAction SilentlyContinue } }
 
 # ---- fake install ----------------------------------------------------------
-$Temp       = Join-Path $env:TEMP ("svbridge_test_" + [guid]::NewGuid().ToString("N"))
+$Temp       = (New-Item -ItemType Directory -Force -Path (Join-Path $env:TEMP ("svbridge_test_" + [guid]::NewGuid().ToString("N")))).FullName   # long form (CI TEMP is an 8.3 path)
 $InstallDir = "$Temp\install"
 $Log        = "$InstallDir\forever_sv_bridge.log"
 $GamePath   = "$Temp\World of Warcraft\_classic_beta_"
